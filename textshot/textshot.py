@@ -14,7 +14,7 @@ from .ocr import ensure_tesseract_installed, get_ocr_result
 
 
 class Snipper(QtWidgets.QWidget):
-    def __init__(self, parent, langs=None, flags=Qt.WindowFlags()):
+    def __init__(self, parent, removeEOL, langs=None,  flags=Qt.WindowFlags()):
         super().__init__(parent=parent, flags=flags)
 
         self.setWindowTitle("TextShot")
@@ -33,6 +33,7 @@ class Snipper(QtWidgets.QWidget):
 
         self.start, self.end = QtCore.QPoint(), QtCore.QPoint()
         self.langs = langs
+        self.removeEOL = removeEOL
 
     def getWindow(self):
         return self._screen.grabWindow(0)
@@ -72,6 +73,11 @@ class Snipper(QtWidgets.QWidget):
 
         ocr_result = self.ocrOfDrawnRectangle()
         if ocr_result:
+	    # Remove hyphenation followed by EOL; replace EOL with space; replace right single quotation mark with apostrophe 
+            if self.removeEOL:
+                ocr_result = ocr_result.replace("-\n", "")
+                ocr_result = ocr_result.replace("\n", " ")
+                ocr_result = ocr_result.replace("’", "'")
             return ocr_result
         else:
             log_ocr_failure()
@@ -167,8 +173,15 @@ arg_parser.add_argument(
     help="select a screen region then take textshots every INTERVAL milliseconds",
 )
 
+arg_parser.add_argument(
+    "-r",
+    "--removeEOL",
+    help="Remove end of lines (replace with space), remove hyphenation and replace right single quotation mark with apostrophe",
+    action='store_true',
+)
 
-def take_textshot(langs, interval):
+
+def take_textshot(langs, interval, removeEOL):
     ensure_tesseract_installed()
 
     QtCore.QCoreApplication.setAttribute(Qt.AA_DisableHighDpiScaling)
@@ -176,10 +189,10 @@ def take_textshot(langs, interval):
 
     window = QtWidgets.QMainWindow()
     if interval != None:
-        snipper = IntervalSnipper(window, interval, langs)
+        snipper = IntervalSnipper(window, removeEOL, interval, langs)
         snipper.show()
     else:
-        snipper = OneTimeSnipper(window, langs)
+        snipper = OneTimeSnipper(window,  removeEOL, langs)
         snipper.show()
 
     sys.exit(app.exec_())
@@ -187,7 +200,7 @@ def take_textshot(langs, interval):
 
 def main():
     args = arg_parser.parse_args()
-    take_textshot(args.langs, args.interval)
+    take_textshot(args.langs, args.interval, args.removeEOL)
 
 
 if __name__ == "__main__":
