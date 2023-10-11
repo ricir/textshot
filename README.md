@@ -15,7 +15,7 @@ Take a screenshot and copy its text content to the clipboard. Works on Windows, 
 
 `textshot -h` prints the available command line options:
 
-    usage: textshot [-h] [-i INTERVAL] [langs]
+    usage: textshot [-h] [-i INTERVAL] [-r] [langs]
 
     Take a screenshot and copy its text content to the clipboard.
 
@@ -25,8 +25,9 @@ Take a screenshot and copy its text content to the clipboard. Works on Windows, 
     optional arguments:
     -h, --help            show this help message and exit
     -i INTERVAL, --interval INTERVAL
-                            select a screen region then take textshots every INTERVAL milliseconds
-    -r, --reformat        remove end of lines (replace with space), remove hyphenation and replace right single quotation mark with apostrophe
+                          select a screen region then take textshots every INTERVAL milliseconds
+    -r, --reformat        remove end of lines (replace with space), remove hyphenation and replace 
+                          right single quotation mark with apostrophe
 
 ### Examples
 
