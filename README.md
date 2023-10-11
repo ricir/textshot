@@ -26,6 +26,7 @@ Take a screenshot and copy its text content to the clipboard. Works on Windows, 
     -h, --help            show this help message and exit
     -i INTERVAL, --interval INTERVAL
                             select a screen region then take textshots every INTERVAL milliseconds
+    -r, --reformat        remove end of lines (replace with space), remove hyphenation and replace right single quotation mark with apostrophe
 
 ### Examples
 
